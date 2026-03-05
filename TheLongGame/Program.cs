@@ -17,6 +17,44 @@ class Program
 {
     static void Main(string[] args)
     {
-        Console.WriteLine("Hello, World!");
+        string userName;
+        ConsoleKey userInput;
+        int userScore = 0;
+
+        Console.Write("What is your name? ");
+        userName = Console.ReadLine();
+
+        if (File.Exists($"User/{userName}.txt"))
+        {
+            FileStream streamOpen = File.Open($"User/{userName}.txt", FileMode.Open);
+            StreamReader reader = new StreamReader(streamOpen);
+            userScore = int.Parse(reader.ReadLine());
+            reader.Close();
+        }
+        else
+        {
+            File.Create($"User/{userName}.txt").Close();
+        }
+
+        FileStream stream = File.Open($"User/{userName}.txt", FileMode.Create);
+        StreamWriter writer = new StreamWriter(stream);
+
+        Console.Write($"\nWelcome {userName}! ");
+        
+        do
+        {
+            Console.WriteLine($"\nYour Score is {userScore}");
+
+            Console.Write("\nEnter any key to earn 1 point: ");
+            userInput = Console.ReadKey().Key;
+        
+            if (userInput != ConsoleKey.Enter)
+            {
+                userScore++;
+            }
+        } while (userInput != ConsoleKey.Enter);
+        
+        writer.WriteLine(userScore);
+        writer.Close();
     }
 }
